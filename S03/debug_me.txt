@@ -1,0 +1,1 @@
+On the debug me code there is only one error: the zero division error. While trying to run the program you realize that the function is trying to divide by zero. Only with implementing a try and except ZeroDivisionError inside the function you can avoid the error. This happens when a and b are the same.
