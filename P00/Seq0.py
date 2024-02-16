@@ -53,4 +53,49 @@ def seq_count(seq):
     dict["C"] = count_c
     dict["G"] = count_g
     dict["T"] = count_t
-    print(dict)
+    return dict
+
+def seq_reverse(seq, n):
+    FOLDER = "./sequences/"
+    FILENAME = seq + ".txt"
+    file_contents = Path(FOLDER + FILENAME).read_text()
+    index = file_contents.find("\n")
+    list_contents = (file_contents[index:]).replace("\n", "")
+    reverse = ''
+    seq = list_contents[:n]
+    index = len(seq) - 1
+    while index >= 0:
+        reverse += seq[index]
+        index -= 1
+
+    print("Fragment:", seq)
+    print("Reverse:", reverse)
+
+def seq_complement(seq):
+    FOLDER = "./sequences/"
+    FILENAME = seq + ".txt"
+    file_contents = Path(FOLDER + FILENAME).read_text()
+    index = file_contents.find("\n")
+    list_contents = (file_contents[index:]).replace("\n", "")
+    comp = ''
+    seq = list_contents[:20]
+    dict = {"A": "T", "C": "G", "G": "C", "T": "A"}
+    for base in seq:
+        comp += dict[base]
+
+    print("Fragment:", seq)
+    print("Complement:", comp)
+
+
+def most_freq_base(seq):
+    dict = seq_count(seq)
+    list_counts = [dict["A"], dict["C"], dict["G"], dict["T"]]
+    max_count = max(list_counts)
+    if max_count == dict["T"]:
+        print("Gene", seq, ": Most frequent Base: T")
+    if max_count == dict["A"]:
+        print("Gene", seq, ": Most frequent Base: A")
+    if max_count == dict["C"]:
+        print("Gene", seq, ": Most frequent Base: C")
+    if max_count == dict["G"]:
+        print("Gene", seq, ": Most frequent Base: G")
