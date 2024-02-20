@@ -16,17 +16,23 @@ def generate_seqs(pattern, number):
         list.append(Seq(pattern * i))
     return list
 
-def print_seqs(seq_list):
-    n = 0
-    for seq in seq_list:
-        termcolor.cprint(("Sequence", n, ": (Length:", seq.len(), ")", seq), 'blue')
-        n += 1
-
 seq_list1 = generate_seqs("A", 3)
 seq_list2 = generate_seqs("AC", 5)
 
+def print_seqs(seq_list1):
+    n = 0
+    for seq in seq_list1:
+        termcolor.cprint(("Sequence", n, ": (Length:", seq.len(), ")", seq), 'blue')
+        n += 1
+
 print("List 1:")
 print_seqs(seq_list1)
+
+def print_seqs(seq_list2):
+    n = 0
+    for seq in seq_list2:
+        termcolor.cprint(("Sequence", n, ": (Length:", seq.len(), ")", seq), 'yellow')
+        n += 1
 
 
 print()
