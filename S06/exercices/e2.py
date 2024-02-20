@@ -16,6 +16,5 @@ def print_seqs(seq_list):
         print(f"Sequence", n, ": (Length:", seq.len(), ")", seq)
         n += 1
 
-
 seq_list = [Seq("ACT"), Seq("GATA"), Seq("CAGATA")]
 print_seqs(seq_list)
