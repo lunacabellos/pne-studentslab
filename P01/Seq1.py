@@ -71,6 +71,7 @@ def generate_seqs(pattern, number):
         list.append(Seq(pattern * i))
     return list
 
+
 def print_seqs(seq_list):
     n = 1
     for seq in seq_list:
