@@ -24,13 +24,11 @@ class Seq:
             return len(self.strbases)
 
     def count_base(self, base):
-        bases = ["A", "C", "G", "T"]
-        for base in bases:
-            count = 0
-            for i in seq:
-                if i == base:
-                    count += 1
-            print(base, ":", count)
+        self.base = base
+        if self.strbases is None or base not in self.strbases:
+            return 0
+        else:
+            return self.strbases.count(base)
 
     def count(self):
         dict = {"A": 0, "C": 0, "G": 0, "T": 0}
@@ -65,23 +63,44 @@ class Seq:
                 index -= 1
             return reverse
 
-def generate_seqs(pattern, number):
-    list = []
-    for i in range(1, number + 1):
-        list.append(Seq(pattern * i))
-    return list
+    def complement(self):
+        complement = ""
+        if self.strbases == None:
+            return "NULL"
+        else:
+            for base in self.strbases:
+                if base == "A":
+                    complement += "T"
+                elif base == "G":
+                    complement += "C"
+                elif base == "C":
+                    complement += "G"
+                elif base == "T":
+                    complement += "A"
+                else:
+                    return "ERROR"
+        return complement
+
+    def read_fasta(self, filename):
+        self.filename = filename
+        file_content = Path(filename).read_text()
+        lines = file_content.splitlines()
+        body = lines[1:]
+        dna_sequence = ""
+        for line in body:
+            dna_sequence += line
+        return dna_sequence
+
+    def read_fasta(self, filename):
+        with open(filename, "r") as f:
+            file_contents = Path(filename).read_text()
+            list_contents = file_contents.split("\n")
+            complete_seq = ""
+            for i in range(1, len(list_contents)):
+                complete_seq += (list_contents[i])
+            f.close()
+        return complete_seq
 
 
-def print_seqs(seq_list):
-    n = 1
-    for seq in seq_list:
-        print(f"Sequence", n, ": (Length:", seq.len(), ")", seq)
-        n += 1
-def seq_len(seq):
-    seq.len()
-def count_seq(seq):
-    print("Bases:", seq.count())
 
-def rev_seq(seq):
-    print("Rev:", seq.reverse())
 
