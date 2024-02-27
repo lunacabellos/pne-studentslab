@@ -12,3 +12,4 @@ print(f"Sequence 1: (Length: {s1.len()}): {s1}\n\tBases: {s1.count()}\n\tRev: {s
 
 
 
+

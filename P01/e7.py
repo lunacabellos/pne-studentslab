@@ -10,3 +10,4 @@ print(f"Sequence 1: (Length: {s1.len()}): {s1}\n\tBases: {s1.count()}\n\tRev: {s
 print(f"Sequence 2: (Length: {s2.len()}): {s2}\n\tBases: {s2.count()}\n\tRev: {s2.reverse()}")
 print(f"Sequence 3: (Length: {s3.len()}): {s3}\n\tBases: {s3.count()}\n\tRev: {s3.reverse()}")
 
+
