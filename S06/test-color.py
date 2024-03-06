@@ -1,3 +1,3 @@
 import termcolor
 
-termcolor.cprint("Hey! this is printed in green!", 'yellow')
+termcolor.cprint("Hey! this is printed in green!", 'green')
