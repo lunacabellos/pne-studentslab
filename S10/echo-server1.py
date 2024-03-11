@@ -3,7 +3,7 @@ import termcolor
 
 # Configure the Server's IP and PORT
 PORT = 8081
-IP = "212.128.255.17" # this IP address is local, so only requests from the same machine are possible
+IP = "212.128.255.88" # this IP address is local, so only requests from the same machine are possible
 
 # -- Step 1: create the socket
 ls = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -18,10 +18,10 @@ print("The server is configured!")
 
 while True:
     (rs, address) = ls.accept()
-    print("Waiting for Clients to connectecho")
+    print("Waiting for Clients to connect")
     print(f"A client has connected to the server!")
     msg = rs.recv(2048).decode("utf-8")
-    print("Message received: " + termcolor.colored(msg, "yellow"))
+    print("Message received: " + termcolor.colored(msg, "green"))
     newMsg = "ECHO:  " + msg
     rs.send(newMsg.encode())
     rs.close()
