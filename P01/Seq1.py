@@ -1,4 +1,5 @@
 class Seq:
+    bases = ["A", "G", "C", "T"]
     def __init__(self, strbases=None):
         if strbases is None:
             print("NULL sequence created")
@@ -96,7 +97,7 @@ class Seq:
 
     def max_base(self):
         bases_dict = {}
-        for b in Seq.BASES:
+        for b in Seq.bases:
             bases_dict[b] = self.count_base(b)
 
         most_frequent_base = max(bases_dict, key=bases_dict.get)

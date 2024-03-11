@@ -8,9 +8,9 @@ print(f"-----| Practice 1, Exercise 9 |------")
 # -- Create a Null sequence
 s = Seq()
 
-GENE = "U5"
+gene = "U5"
 
-filename = os.path.join("..", "sequences", GENE + ".txt")
+filename = os.path.join("..", "sequences", gene + ".txt")
 try:
     s.read_fasta(filename)
     print(f"Sequence: (Length: {s.len()}) {s}")
