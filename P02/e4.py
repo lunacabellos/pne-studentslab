@@ -2,11 +2,9 @@ from Client0 import Client
 from seq import Seq
 import os
 
-PRACTICE = 2
-EXERCISE = 4
-GENES = ["U5", "FRAT1", "ADA"]
+genes = ["U5", "FRAT1", "ADA"]
 
-print(f"-----| Practice {PRACTICE}, Exercise {EXERCISE} |------")
+print(f"-----| Practice 2, Exercise 4 |------")
 
 IP = "192.168.0.33"
 PORT = 8081
@@ -14,7 +12,7 @@ PORT = 8081
 c = Client(IP, PORT)
 print(c)
 
-for gene in GENES:
+for gene in genes:
     filename = os.path.join("..", "sequences", gene + ".txt")
     try:
         s = Seq()  # s.__str__()
