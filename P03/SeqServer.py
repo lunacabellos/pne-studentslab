@@ -1,6 +1,6 @@
 from termcolor import termcolor
 
-from P01 import Seq1
+from Seq1 import *
 import socket
 
 from Seq1 import Seq
@@ -54,7 +54,6 @@ class Server:
             get = self.get_function(msg)
             print(get)
             return get
-
 
         elif msg.startswith("INFO"):
             termcolor.cprint("INFO", 'green')
