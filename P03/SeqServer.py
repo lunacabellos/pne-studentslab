@@ -121,5 +121,4 @@ class Server:
         seq.read_fasta(filename)
         return str(seq)
 
-
 object = Server()
