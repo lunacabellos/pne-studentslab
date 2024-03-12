@@ -1,8 +1,7 @@
-from termcolor import termcolor
+import termcolor
 
-from Seq1 import *
 import socket
-
+import os
 from Seq1 import Seq
 
 
@@ -74,7 +73,6 @@ class Server:
             return rev
 
         elif msg.startswith("GENE"):
-            termcolor.cprint("REV", 'green')
             gene = self.gene_function(msg)
             print(gene)
             return gene
@@ -95,11 +93,11 @@ class Server:
         gene = gene[1]
         seq = Seq(gene)
         length = f"Total length: {seq.len()}"
-        c_a = f"\nA:{seq.count_base('A')} ({seq.count_base('A') / seq.len() * 100}%)"
-        c_c = f"\nC:{seq.count_base('C')} ({seq.count_base('C') / seq.len() * 100}%)"
-        c_g = f"\nG:{seq.count_base('G')} ({seq.count_base('G') / seq.len() * 100}%)"
-        c_t = f"\nT:{seq.count_base('T')} ({seq.count_base('T') / seq.len() * 100}%)"
-        return f"Sequence: {seq} \n{length} {c_a}, {c_c}, {c_g}, {c_t}"
+        c_a = f"\nA:{seq.count_base('A')} ({(seq.count_base('A') / seq.len() * 100):.1f}%)"
+        c_c = f"\nC:{seq.count_base('C')} ({(seq.count_base('C') / seq.len() * 100):.1f}%)"
+        c_g = f"\nG:{seq.count_base('G')} ({(seq.count_base('G') / seq.len() * 100):.1f}%)"
+        c_t = f"\nT:{seq.count_base('T')} ({(seq.count_base('T') / seq.len() * 100):.1f}%)"
+        return f"Sequence: {seq} \n{length} {c_a} {c_c} {c_g} {c_t}"
 
     def comp_function(self, msg):
         seq = msg.split(" ")
@@ -117,9 +115,11 @@ class Server:
 
     def gene_function(self, msg):
         which_gene_to_send = msg.split(" ")
-        gene_to_send = which_gene_to_send[1]
+        gene = which_gene_to_send[1]
         seq = Seq()
-        return seq.read_fasta(gene_to_send)
+        filename = os.path.join("..", "sequences", gene + ".txt")
+        seq.read_fasta(filename)
+        return str(seq)
 
 
 object = Server()
