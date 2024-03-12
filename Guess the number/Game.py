@@ -3,7 +3,9 @@ import socket
 import random
 
 class NumberGuesser:
-    def __init__(self, secret_number):
+    def __init__(self):
+        secret_number = random.randint(1, 100)
+        print("The secret number is:", secret_number)
         self.secret_number = secret_number
         self.attempts = []
 
@@ -25,19 +27,18 @@ serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 try:
     serversocket.bind((IP, PORT))
     serversocket.listen()
+    ng = NumberGuesser()
     flag = True
     while flag:
         print(f"Waiting for clients at {IP}, {PORT}")
         (clientsocket, address) = serversocket.accept()
 
         print(f"Client connected, number is being generated!")
-        secret_number = random.randint(1, 100)
-        print("The secret number is:", secret_number)
+
         print(f"Random number generated, please, enter your try")
         # Read the message from the client, if any
         msg = clientsocket.recv(2048).decode("utf-8")
         print("Message from client: {}".format(msg))
-        ng = NumberGuesser(secret_number)
         rsp = ng.guess(msg)
         # Send the message
         send_bytes = str.encode(rsp)

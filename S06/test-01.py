@@ -11,9 +11,9 @@ print(f"    T: {seq_count_base(seq1, 'T')}")
 print(f"    C: {seq_count_base(seq1, 'C')}")
 print(f"    G: {seq_count_base(seq1, 'G')}")
 
-def seq_count_base(sequence, base=None):
+#def seq_count_base(sequence, base=None):
     # code
-def seq_len(seq=None)
+#def seq_len(seq=None)
    # code
    # -- Check that the sequence is valid
-   seq_check(seq1)
+   #seq_check(seq1)
