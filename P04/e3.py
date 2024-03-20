@@ -24,8 +24,8 @@ def process_client(s):
     print("Request line: ", end="")
     termcolor.cprint(req_line, "green")
 
-    read_file = Path("index.html").read_text()  #as it is not a cvariable you need ""
-
+    file_A = Path("html/info/A.html").read_text()  #as it is not a cvariable you need ""
+    file_C = Path("html/info/C.html").read_text()
 
     # -- Generate the response message
     # It has the following lines
@@ -35,7 +35,13 @@ def process_client(s):
     # Body (content to send)
 
     # This new contents are written in HTML language
-    body = read_file
+
+    if "/info/A" in req_line:
+        body = file_A
+    elif "/info/C" in req_line:
+        body = file_C
+    else:
+        body = """"""
     # -- Status line: We respond that everything is ok (200 code)
     status_line = "HTTP/1.1 200 OK\n"
 
@@ -64,7 +70,7 @@ ls.bind((IP, PORT))
 # -- Become a listening socket
 ls.listen()
 
-print("Green server configured!")
+print("Server configured!")
 
 # --- MAIN LOOP
 while True:
