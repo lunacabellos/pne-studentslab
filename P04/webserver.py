@@ -40,7 +40,7 @@ def process_client(s):
 
     # This new contents are written in HTML language
     req_line1 = req_line.split("HTTP")
-    if req_line1[0] == "GET / ":
+    if req_line1[0] == "GET /html/index" or req_line1[0] == "GET / ":
         body = file_index
     elif "/info/A" in req_line:
         body = file_A
