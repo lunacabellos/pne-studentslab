@@ -8,7 +8,6 @@ def are_bases_ok(strbases):
 
 
 class Seq:
-    """A class for representing sequences"""
     BASES = ['A', 'T', 'C', 'G']
 
     def __init__(self, strbases=None):
@@ -95,10 +94,6 @@ class Seq:
 
 
 class Gene(Seq):
-    """This class is derived from the Seq Class
-           All the objects of class Gene will inherit
-           the methods from the Seq class
-        """
 
     def __init__(self, strbases, name=""):
         super().__init__(strbases)

@@ -1,7 +1,7 @@
 from Seq1 import *
 print("-----| Practice 1, Exercise 6 |------")
 s1 = Seq()
-s2 = Seq("ACTGA")
+s2 = Seq("ACTG")
 s3 = Seq("Invalid sequence")
 
 print(f"Sequence 1: (Length: {s1.len()}): {s1}\n\tBases: {s1.count()}")

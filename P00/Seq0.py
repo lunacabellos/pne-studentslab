@@ -36,23 +36,8 @@ def seq_count(seq):
     file_contents = Path(FOLDER + FILENAME).read_text()
     index = file_contents.find("\n")
     list_contents = (file_contents[index:]).replace("\n", "")
-    count_a = 0
-    count_c = 0
-    count_g = 0
-    count_t = 0
     for i in list_contents:
-        if i == "A":
-            count_a += 1
-        if i == "T":
-            count_t += 1
-        if i == "G":
-            count_g += 1
-        if i == "C":
-            count_c += 1
-    dict["A"] = count_a
-    dict["C"] = count_c
-    dict["G"] = count_g
-    dict["T"] = count_t
+        dict[i] += 1
     return dict
 
 def seq_reverse(seq, n):
