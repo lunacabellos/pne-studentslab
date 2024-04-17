@@ -2,29 +2,38 @@ import http.server
 import socketserver
 import termcolor
 from pathlib import Path
+import jinja2 as j
+from urllib.parse import parse_qs, urlparse
 
-# Define the Server's port
+
 PORT = 8080
-
-
-# -- This is for preventing the error: "Port already in use"
 socketserver.TCPServer.allow_reuse_address = True
 
 
+def read_html_file(filename):
+    contents = Path("html/" + filename).read_text()
+    contents = j.Template(contents)
+    return contents
+
 # Class with our Handler. It is a called derived from BaseHTTPRequestHandler
 # It means that our class inherits all his methods and properties
-class TestHandler(http.server.BaseHTTPRequestHandler):
 
+
+class TestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
+        url_path = urlparse(self.path)
+        path = url_path.path  # we get it from here
+        arguments = parse_qs(url_path.query)
+
         # Print the request line
         termcolor.cprint(self.requestline, 'green')
 
-        if self.path == "/":
-            contents = Path('html/form-1.html').read_text()
-        elif self.path.startswith("/echo"):
-            message = self.path[1:]
-            message = message[9:]
-            contents = Path('html/form-e1.html').read_text().format(message)
+        if path == "/":
+            contents = Path('html/index.html').read_text()
+        elif path.startswith("/ping"):
+            contents = Path('html/ping.html').read_text()
+        elif path.startswith("/gene"):
+            contents = read_html_file('html/get.html').render(context={"todisplay": text})
         else:
             contents = Path('html/error.html').read_text()
 
