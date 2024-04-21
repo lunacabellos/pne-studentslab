@@ -2,6 +2,7 @@ import http.server
 import socketserver
 import termcolor
 from pathlib import Path
+from Seq1 import Seq
 import jinja2 as j
 from urllib.parse import parse_qs, urlparse
 
@@ -28,12 +29,44 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         # Print the request line
         termcolor.cprint(self.requestline, 'green')
 
-        if path == "/":
+        filenames = ["ADA", "FRAT1", "FXN", "RNU6_269P", "U5"]
+
+        if path == "/" or path == "/index" or path == "/index.html":
             contents = Path('html/index.html').read_text()
         elif path.startswith("/ping"):
             contents = Path('html/ping.html').read_text()
-        elif path.startswith("/gene"):
+        elif path.startswith("/get"):
+            number_seq = int(path.split("=")[1])
+            text = [number_seq]
             contents = read_html_file('html/get.html').render(context={"todisplay": text})
+        elif path.startswith("/gene"):
+            filename = path.strip("/gene?name=")
+            if filename in filenames:
+                s = Seq()
+                s.read_fasta("../sequences/" + filename + ".txt")
+                contents = Path("html/gene.html").read_text().format(filename, s)
+
+        elif path.startswith("/operation?seq="):
+            ops = path.strip("/operation?").split("&")
+            s = Seq()
+            s.strbases = ops[0].strip("seq=")
+            s.validate()
+            if s.valid:
+                op = ops[1].strip("op=")
+                result = None
+                if op == "rev":
+                    result = s.reverse()
+                elif op == "com":
+                    print("hi")
+                    result = s.complement()
+                elif op == "inf":
+                    result = ""
+                    result += "Total length: " + str(s.len()) + "<br><br>"
+                    count = s.count()
+                    for i in count:
+                        result += i + ": (" + str(count[i]) + str(
+                            round(count[i] / sum([count[j] for j in count]), 1)) + "%)" + "<br>"
+                contents = Path("html/operation.html").read_text().format(str(s), op, result)
         else:
             contents = Path('html/error.html').read_text()
 
