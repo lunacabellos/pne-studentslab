@@ -1,8 +1,9 @@
 import http.server
+import os
 import socketserver
 import termcolor
 from pathlib import Path
-from Seq1 import Seq
+from Seq0 import seq_reverse, seq_complement, seq_len, seq_count
 import jinja2 as j
 from urllib.parse import parse_qs, urlparse
 
@@ -29,44 +30,69 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         # Print the request line
         termcolor.cprint(self.requestline, 'green')
 
-        filenames = ["ADA", "FRAT1", "FXN", "RNU6_269P", "U5"]
+        def read_html_file(filename):
+            contents = Path("html/" + filename).read_text()
+            contents = j.Template(contents)
+            return contents
+
+        def get_info(sequence):
+            text = "Sequence: " + sequence + "<p>" + "Total length: " + str(seq_len(sequence)) + "<p>"
+            dict1 = seq_count(sequence)
+            for e in dict1:
+                index = e + ": "
+                percentage = (dict1[e] / seq_len(sequence)) * 100
+                percentage = "(" + str(round(percentage, 2)) + "%)"
+                text += "<p>" + index + str(dict1[e]) + percentage + "<p>"
+            return text
+
+        url_path = urlparse(self.path)
+        path = url_path.path  # we get it from here
+        arguments = parse_qs(url_path.query)
+
+        sequences = ["AAACCGTA", "GATA", "AACGT", "CCTGC", "ACGTACGT"]
+        keys = ["U5", "ADA", "FRAT1", "RNU6_269P", "FXN"]
+        values = []
+        for e in keys:
+            #filename = "sequences/" + e + ".txt"
+            filename = os.path.join("..", "sequences", e + ".txt")
+            gene = Path(filename).read_text()
+            gene = gene[gene.find("\n"):]
+            values.append(gene)
+        dict1 = dict(zip(keys, values))
 
         if path == "/" or path == "/index" or path == "/index.html":
             contents = Path('html/index.html').read_text()
+
         elif path.startswith("/ping"):
             contents = Path('html/ping.html').read_text()
-        elif path.startswith("/get"):
-            number_seq = int(path.split("=")[1])
-            text = [number_seq]
-            contents = read_html_file('html/get.html').render(context={"todisplay": text})
-        elif path.startswith("/gene"):
-            filename = path.strip("/gene?name=")
-            if filename in filenames:
-                s = Seq()
-                s.read_fasta("../sequences/" + filename + ".txt")
-                contents = Path("html/gene.html").read_text().format(filename, s)
 
-        elif path.startswith("/operation?seq="):
-            ops = path.strip("/operation?").split("&")
-            s = Seq()
-            s.strbases = ops[0].strip("seq=")
-            s.validate()
-            if s.valid:
-                op = ops[1].strip("op=")
-                result = None
-                if op == "rev":
-                    result = s.reverse()
-                elif op == "com":
-                    print("hi")
-                    result = s.complement()
-                elif op == "inf":
-                    result = ""
-                    result += "Total length: " + str(s.len()) + "<br><br>"
-                    count = s.count()
-                    for i in count:
-                        result += i + ": (" + str(count[i]) + str(
-                            round(count[i] / sum([count[j] for j in count]), 1)) + "%)" + "<br>"
-                contents = Path("html/operation.html").read_text().format(str(s), op, result)
+        elif path.startswith("/get"):
+            number = arguments["s"][0]
+            text = sequences[int(number)]
+            contents = read_html_file("html/get.html").render(context={"todisplay": text})
+
+        elif path.startswith("/gene"):
+            key = arguments["g"][0]
+            text = dict1[key]
+            contents = read_html_file("html/gene.html").render(context={"todisplay": text})
+
+        elif path.startswith("/operation"):
+            key = arguments["op"][0]
+            if key == "Info":
+                text = arguments["operation"][0]
+                text2 = "Info"
+                text3 = get_info(arguments["operation"][0])
+            elif key == "Comp":
+                text = arguments["operation"][0]
+                text2 = "Comp"
+                text3 = seq_complement(arguments["operation"][0])
+            else:
+                text = arguments["operation"][0]
+                text2 = "Rev"
+                text3 = seq_reverse(arguments["operation"][0], None)
+            contents = read_html_file("html/operation.html").render(
+                context={"todisplay": text, "todisplay2": text2, "todisplay3": text3})
+
         else:
             contents = Path('html/error.html').read_text()
 
