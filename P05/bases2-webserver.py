@@ -16,14 +16,14 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         # Print the request line
         termcolor.cprint(self.requestline, 'green')
 
-        if "/info/A.html" == self.path:
+        if "html/info/A.html" == self.path:
             contents = read_html_file("A.html")
-        elif "/info/C.html" == self.path:
+        elif "html/info/C.html" == self.path:
             contents = read_html_file("C.html")
-        elif "/info/G.html" == self.path:
+        elif "html/info/G.html" == self.path:
             contents = read_html_file("G.html")
             self.send_response(200)
-        elif "/info/T.html" == self.path:
+        elif "html/info/T.html" == self.path:
             contents = read_html_file("T.html")
             self.send_response(200)
         elif self.path == "/" or self.path == "/index.html":
