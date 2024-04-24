@@ -13,8 +13,9 @@ people = json.loads(jsonstring)
 
 # Print the information on the console, in colors
 print("Total people in the database:", len(people["People"]))
-print()
+
 for i, dictnum in enumerate(people['People']):
+    print()
     termcolor.cprint("Name: ", 'green', end="")
     print(people['People'][i]['Firstname'], people['People'][i]['Lastname'])
 
