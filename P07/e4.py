@@ -58,19 +58,19 @@ print(INPUT_NAME)
 termcolor.cprint("Description: ", 'green', end="")
 print(response['desc'])
 
-def info_function(s):
-    result = f"A: {s.count_base('A')} ({round(s.count_base('A') / s.len() * 100, 1)}%)"
-    result += f"\nC: {s.count_base('C')} ({round(s.count_base('C') / s.len() * 100, 1)}%)"
-    result += f"\nG: {s.count_base('G')} ({round(s.count_base('G') / s.len() * 100, 1)}%)"
-    result += f"\nT: {s.count_base('T')} ({round(s.count_base('T') / s.len() * 100, 1)}%)"
-    return result
-
 s = Seq(response['seq'])
 
 termcolor.cprint("Total length: ", 'green', end="")
 print(s.len())
 
-print(info_function(s))
+termcolor.cprint("A", 'blue', end="")
+print(f": {s.count_base('A')} ({round((s.count_base('A') / s.len() * 100),1)}%)")
+termcolor.cprint("C", 'blue', end="")
+print(f": {s.count_base('C')} ({round((s.count_base('C') / s.len() * 100),1)}%)")
+termcolor.cprint("G", 'blue', end="")
+print(f": {s.count_base('G')} ({round((s.count_base('G') / s.len() * 100),1)}%)")
+termcolor.cprint("T", 'blue', end="")
+print(f": {s.count_base('T')} ({round((s.count_base('T') / s.len() * 100),1)}%)")
 
 termcolor.cprint("Most frequent base: ", 'green', end="")
 print(s.max_base())
