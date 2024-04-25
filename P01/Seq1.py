@@ -1,3 +1,6 @@
+from pathlib import Path
+
+
 class Seq:
     bases = ["A", "G", "C", "T"]
     def __init__(self, strbases=None):
@@ -82,18 +85,15 @@ class Seq:
                     return "ERROR"
         return complement
 
-
     def read_fasta(self, filename):
-        from pathlib import Path
-
-        file_content = Path(filename).read_text()
-        lines = file_content.splitlines()
-        body = lines[1:]
-
-        dna_sequence = ""
-        for line in body:
-            dna_sequence += line  # dna_sequence = dna_sequence + line
-        self.strbases = dna_sequence
+        folder = "../sequences/"
+        filename = filename + ".txt"
+        file_contents = Path(folder + filename).read_text()
+        header = file_contents.find("\n")
+        body = file_contents[header:]
+        list_contents = body.replace("\n", "")
+        self.strbases = list_contents
+        return self.strbases
 
     def max_base(self):
         bases_dict = {}

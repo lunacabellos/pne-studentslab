@@ -11,10 +11,10 @@
         <hr>
         Is the server alive? <input type="submit" value="PING">
     </form>
-    <form action="seq" method="get">
+    <form action="/get" method="get">
       <hr>
         Get a sequence. Select sequence number
-        <select name="seq">
+        <select name="number">
         <option value="0">0</option>
         <option value="1">1</option>
         <option value="2">2</option>
@@ -41,9 +41,9 @@
         <input type="text" name="seq">
         <br>
         Select operation
-        <input type="radio" name="op" value="inf" checked> Info
-        <input type="radio" name="op" value="com" checked> Comp
-        <input type="radio" name="op" value="rev" checked> Rev
+        <input type="radio" name="operation" value="Info" checked> Info
+        <input type="radio" name="operation" value="Comp" checked> Comp
+        <input type="radio" name="operation" value="Rev" checked> Rev
         <br>
         Perform operation:
         <input type="submit" value="OPERATE!">

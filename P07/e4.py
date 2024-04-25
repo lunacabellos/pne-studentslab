@@ -18,7 +18,7 @@ GENES = {
 
 SERVER = 'rest.ensembl.org'
 ENDPOINT = "/sequence/id/"
-INPUT_NAME = input("Write the gene name:")
+INPUT_NAME = input("Write the gene name: ")
 INPUT_ID = GENES[INPUT_NAME]
 PARAMS = "?content-type=application/json"
 REQUEST = ENDPOINT + INPUT_ID + PARAMS
@@ -58,7 +58,19 @@ print(INPUT_NAME)
 termcolor.cprint("Description: ", 'green', end="")
 print(response['desc'])
 
+def info_function(s):
+    result = f"A: {s.count_base('A')} ({round(s.count_base('A') / s.len() * 100, 1)}%)"
+    result += f"\nC: {s.count_base('C')} ({round(s.count_base('C') / s.len() * 100, 1)}%)"
+    result += f"\nG: {s.count_base('G')} ({round(s.count_base('G') / s.len() * 100, 1)}%)"
+    result += f"\nT: {s.count_base('T')} ({round(s.count_base('T') / s.len() * 100, 1)}%)"
+    return result
+
 s = Seq(response['seq'])
 
 termcolor.cprint("Total length: ", 'green', end="")
 print(s.len())
+
+print(info_function(s))
+
+termcolor.cprint("Most frequent base: ", 'green', end="")
+print(s.max_base())

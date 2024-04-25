@@ -37,6 +37,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
             except FileNotFoundError:
                 contents = Path("html/error.html").read_text()
                 self.send_response(404)
+
         # Define the content-type header:
         self.send_header('Content-Type', 'text/html')
         self.send_header('Content-Length', str(len(contents.encode())))
