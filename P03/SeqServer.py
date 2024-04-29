@@ -14,6 +14,7 @@ class Server:
 
         # create an INET, STREAMing socket
         serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         try:
             serversocket.bind((IP, PORT))
             # become a server socket
@@ -78,26 +79,23 @@ class Server:
             return gene
 
     def get_function(self, msg):
-        which_gene_to_send = msg.split(" ")
-        gene_to_send = which_gene_to_send[1]
-        genes = ['ADA', 'FRAT1', 'FXN', 'U5', 'RNU6_269P']
-        i = 0
-        for g in genes:
-            if str(i) == gene_to_send:
-                seq = Seq(g)
-                return seq.read_fasta(g)
-            i += 1
+        gene = msg.split(" ")
+        gene = gene[1]
+        genes = ['ACGTTT', 'AAAAGTCGTC', 'ACGTTT', 'ACGTACGTA', 'ACGT', 'TCGA']
+        return genes[gene]
+
 
     def info_function(self, msg):
         gene = msg.split(" ")
         gene = gene[1]
         seq = Seq(gene)
         length = f"Total length: {seq.len()}"
-        c_a = f"\nA:{seq.count_base('A')} ({(seq.count_base('A') / seq.len() * 100):.1f}%)"
-        c_c = f"\nC:{seq.count_base('C')} ({(seq.count_base('C') / seq.len() * 100):.1f}%)"
-        c_g = f"\nG:{seq.count_base('G')} ({(seq.count_base('G') / seq.len() * 100):.1f}%)"
-        c_t = f"\nT:{seq.count_base('T')} ({(seq.count_base('T') / seq.len() * 100):.1f}%)"
-        return f"Sequence: {seq} \n{length} {c_a} {c_c} {c_g} {c_t}"
+        result = f"Sequence: {seq} \n{length}"
+        result += f"\nA:{seq.count_base('A')} ({(seq.count_base('A') / seq.len() * 100):.1f}%)"
+        result += f"\nC:{seq.count_base('C')} ({(seq.count_base('C') / seq.len() * 100):.1f}%)"
+        result += f"\nG:{seq.count_base('G')} ({(seq.count_base('G') / seq.len() * 100):.1f}%)"
+        result += f"\nT:{seq.count_base('T')} ({(seq.count_base('T') / seq.len() * 100):.1f}%)"
+        return result
 
     def comp_function(self, msg):
         seq = msg.split(" ")
@@ -117,8 +115,7 @@ class Server:
         which_gene_to_send = msg.split(" ")
         gene = which_gene_to_send[1]
         seq = Seq()
-        filename = os.path.join("..", "sequences", gene + ".txt")
-        seq.read_fasta(filename)
-        return str(seq)
+        return seq.read_fasta(gene)
+
 
 object = Server()
