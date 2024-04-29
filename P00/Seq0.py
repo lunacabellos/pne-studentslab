@@ -7,7 +7,7 @@ def seq_read_fasta(filename):
     index = file_contents.find("\n")
     list_contents = (file_contents[index:]).replace("\n", "")
     print("DNA file: ", filename[12:])
-    print("The first 20 bases are: \n", list_contents[:20])
+    print("The first 20 bases are:\n", list_contents[:20])
 
 def seq_len(seq):
     FOLDER = "./sequences/"
@@ -27,7 +27,7 @@ def seq_count_base(seq, base):
     for i in list_contents:
         if i == base:
             count += 1
-    print(base, ":", count)
+    print(" ", base, ":", count)
 
 def seq_count(seq):
     dict = {"A": 0, "C": 0, "G": 0, "T": 0}
