@@ -1,6 +1,5 @@
 from pathlib import Path
 
-
 class Seq:
     bases = ["A", "G", "C", "T"]
     def __init__(self, strbases=None):
@@ -36,27 +35,18 @@ class Seq:
 
     def count(self):
         dict = {"A": 0, "C": 0, "G": 0, "T": 0}
-        count_a = 0
-        count_c = 0
-        count_g = 0
-        count_t = 0
+
         for i in self.strbases:
-            if i == "A":
-                count_a += 1
-            if i == "T":
-                count_t += 1
-            if i == "G":
-                count_g += 1
-            if i == "C":
-                count_c += 1
-        dict["A"] = count_a
-        dict["C"] = count_c
-        dict["G"] = count_g
-        dict["T"] = count_t
+            if self.strbases is None or i not in dict:
+                pass
+            else:
+                dict[i] += 1
         return dict
 
     def reverse(self):
-        if self.strbases == "NULL" or self.strbases == "ERROR":
+        if self.strbases == "NULL":
+            return "NULL"
+        elif self.strbases == "ERROR":
             return "ERROR"
         else:
             reverse = ''
@@ -68,22 +58,16 @@ class Seq:
             return reverse
 
     def complement(self):
+        dict_comp = {"A": "T", "T": "A", "C": "G", "G": "C"}
         complement = ""
-        if self.strbases == None:
+        if self.strbases == "NULL":
             return "NULL"
+        elif self.strbases == "ERROR":
+            return "ERROR"
         else:
             for base in self.strbases:
-                if base == "A":
-                    complement += "T"
-                elif base == "G":
-                    complement += "C"
-                elif base == "C":
-                    complement += "G"
-                elif base == "T":
-                    complement += "A"
-                else:
-                    return "ERROR"
-        return complement
+                complement += dict_comp[base]
+            return complement
 
     def read_fasta(self, filename):
         folder = "../sequences/"
@@ -101,24 +85,20 @@ class Seq:
             bases_dict[b] = self.count_base(b)
 
         most_frequent_base = max(bases_dict, key=bases_dict.get)
-        # the maximum is determined based on the values in the dictionary, but the key is the one returned
 
         return most_frequent_base
 
-class Gene(Seq):
-    """This class is derived from the Seq Class
-           All the objects of class Gene will inherit
-           the methods from the Seq class
-        """
-
-    def __init__(self, strbases, name=""):
-        super().__init__(strbases)
-        self.name = name
-        print("New gene created")
-
-    def __str__(self):
-        """Print the Gene name along with the sequence"""
-        return self.name + "-" + self.strbases
+    def processing(self, gene):
+        dict = {'A': 0, 'T': 0, 'C': 0, 'G': 0}
+        for g in gene:
+            dict[g] += 1
+        biggest_value = 0
+        answer = ""
+        for keys in dict:
+            if biggest_value < dict[keys]:
+                biggest_value = dict[keys]
+                answer = keys
+        return answer
 
 
 
