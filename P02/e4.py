@@ -1,6 +1,5 @@
 from Client0 import Client
-from seq import Seq
-import os
+from Seq1 import Seq
 
 genes = ["U5", "FRAT1", "ADA"]
 
@@ -13,10 +12,9 @@ c = Client(IP, PORT)
 print(c)
 
 for gene in genes:
-    filename = os.path.join("..", "sequences", gene + ".txt")
     try:
         s = Seq()  # s.__str__()
-        s.read_fasta(filename)
+        s.read_fasta(gene)
 
         msg = f"Sending {gene} Gene to the server..."
         print(f"To Server: {msg}")
@@ -29,4 +27,4 @@ for gene in genes:
         print(f"From Server: {response}")
 
     except FileNotFoundError:
-        print(f"[ERROR]: file ´{filename}´ not found")
+        print(f"[ERROR]: file ´{gene}´ not found")

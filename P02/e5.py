@@ -1,7 +1,6 @@
 
 from Client0 import Client
-from seq import Seq
-import os
+from Seq1 import Seq
 
 gene = "FRAT1"
 n_fragments = 5
@@ -15,10 +14,9 @@ PORT = 8081
 c = Client(IP, PORT)
 print(c)
 
-filename = os.path.join("..", "sequences", gene + ".txt")
 try:
     s = Seq()
-    s.read_fasta(filename)
+    s.read_fasta(gene)
     print(f"Gene {gene}: {s}")
 
     start = 0
@@ -33,4 +31,4 @@ try:
         start += n_bases
         end += n_bases
 except FileNotFoundError:
-    print(f"[ERROR]: file '{filename}' not found")
+    print(f"[ERROR]: file '{gene}' not found")
