@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>MAIN PAGE</title>
+  </head>
+    <h1 style="border:2px solid SLateBlue;"> BROWSING HUMAN AND VERTEBRATES GENOME</h1>
+  <body style="background-color: LightGray;">
+  <h2 style="color: SlateBlue;">Basic level services -------------------</h2> <br>
+    <form action="list" method="get">
+        1. List of species in the genome database<p>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LIMIT number of species: <input type="text" name="number"> <p>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="Send">
+    </form>
+    <hr><hr><br>
+    <form action="karyotype" method="get">
+        2. Get information about the karyotype<p>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Select the species: <input type="text" name="species"> <p>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="Send">
+    </form>
+    <hr><hr><br>
+    <form action="length" method="get">
+        3. Get the chromosome length<p>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Select the species: <input type="text" name="species"> </p>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Select a chromosome: <input type="text" name="chromo"> <p>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="Send">
+    </form>
+    <hr><hr><br>
+    <form action="seq" method="get">
+        3. Get the chromosome length<p>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Select a chromosome: <input type="text" name="gene"> <p>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="Send">
+    </form>
+  </body>
+</html>
