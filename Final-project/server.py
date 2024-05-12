@@ -6,11 +6,13 @@ import termcolor
 from pathlib import Path
 import jinja2 as j
 from urllib.parse import parse_qs, urlparse
+from Seq1 import Seq
 
 
 PORT = 8080
 socketserver.TCPServer.allow_reuse_address = True
-
+SERVER = 'rest.ensembl.org'
+PARAMS = "?content-type=application/json"
 
 def read_html_file(filename):
     contents = Path("html/" + filename).read_text()
@@ -21,9 +23,7 @@ def read_html_file(filename):
 def get_list_species(arguments):
     number = int(arguments['number'][0])
 
-    SERVER = 'rest.ensembl.org'
     ENDPOINT = "/info/species/"
-    PARAMS = "?content-type=application/json"
     REQUEST = ENDPOINT + PARAMS
 
     conn = http.client.HTTPConnection(SERVER)
@@ -56,9 +56,7 @@ def get_list_species(arguments):
 def get_karyotype(arguments):
     species = arguments['species'][0]
 
-    SERVER = 'rest.ensembl.org'
     ENDPOINT = "/info/assembly/"
-    PARAMS = "?content-type=application/json"
     REQUEST = ENDPOINT + species + PARAMS
 
     conn = http.client.HTTPConnection(SERVER)
@@ -91,9 +89,7 @@ def get_length(arguments):
     species = arguments['species'][0]
     chromo = arguments['chromo'][0].upper()
 
-    SERVER = 'rest.ensembl.org'
     ENDPOINT = "/info/assembly/"
-    PARAMS = "?content-type=application/json"
     REQUEST = ENDPOINT + species + PARAMS
 
     conn = http.client.HTTPConnection(SERVER)
@@ -123,11 +119,9 @@ def get_length(arguments):
 
 def get_id(gene):
 
-    SERVER = 'rest.ensembl.org'
     ENDPOINT = "/lookup/symbol/"
     species = "human/"
-    PARAMS = "?expand=1;content-type=application/json"
-    REQUEST = ENDPOINT + species + gene + PARAMS
+    REQUEST = ENDPOINT + species + gene.upper() + PARAMS
 
     conn = http.client.HTTPConnection(SERVER)
 
@@ -138,21 +132,17 @@ def get_id(gene):
         exit()
 
     r1 = conn.getresponse()
-
     print(f"Response received!: {r1.status} {r1.reason}\n")
 
     data1 = r1.read().decode("utf-8")
-    response1 = json.loads(data1)
-    id_gene = response1["id"]
-    return id_gene
+    response = json.loads(data1)
+    return response["id"]
 
 def get_seq(arguments):
     gene = arguments['gene'][0].upper()
     id_gene = get_id(gene)
 
-    SERVER = 'rest.ensembl.org'
     ENDPOINT = "/sequence/id/"
-    PARAMS = "?content-type=text/plain"
     REQUEST = ENDPOINT + id_gene + PARAMS
 
     conn = http.client.HTTPConnection(SERVER)
@@ -168,21 +158,111 @@ def get_seq(arguments):
     print(f"Response received!: {r1.status} {r1.reason}\n")
 
     data1 = r1.read().decode("utf-8")
-    gene_seq = json.loads(data1)
+    response = json.loads(data1)
 
     contents = read_html_file('gene_seq.html')
-    context = {'gene': gene,  'seq': gene_seq}
+    context = {'gene': gene,  'seq': response["seq"]}
     contents = contents.render(context=context)
     return contents
 
 def get_info(arguments):
-    pass
+    gene = arguments['gene'][0].upper()
+
+    ENDPOINT = "/lookup/symbol/"
+    species = "human/"
+    REQUEST = ENDPOINT + species + gene + PARAMS
+
+    conn = http.client.HTTPConnection(SERVER)
+
+    try:
+        conn.request("GET", REQUEST)
+    except ConnectionRefusedError:
+        print("ERROR! Cannot connect to the Server")
+        exit()
+
+    r1 = conn.getresponse()
+
+    print(f"Response received!: {r1.status} {r1.reason}\n")
+
+    data1 = r1.read().decode("utf-8")
+    response = json.loads(data1)
+    length = response['end'] - response['start']
+
+    contents = read_html_file('gene_info.html')
+    context = {'gene': gene, 'start': response["start"], 'end': response["end"],
+               'length': length,
+               'id': response['id'],
+               'chromo': response['seq_region_name']}
+    contents = contents.render(context=context)
+    return contents
 
 def get_calc(arguments):
-    pass
+    gene = arguments['gene'][0].upper()
+    id_gene = get_id(gene)
 
-def get_genelist(arguments):
-    pass
+    ENDPOINT = "/sequence/id/"
+    REQUEST = ENDPOINT + id_gene + PARAMS
+
+    conn = http.client.HTTPConnection(SERVER)
+
+    try:
+        conn.request("GET", REQUEST)
+    except ConnectionRefusedError:
+        print("ERROR! Cannot connect to the Server")
+        exit()
+
+    r1 = conn.getresponse()
+
+    print(f"Response received!: {r1.status} {r1.reason}\n")
+
+    data1 = r1.read().decode("utf-8")
+    response = json.loads(data1)
+    s = Seq(response["seq"])
+    info = ""
+    for i in s.count():
+        info += f"<li>{i} : {s.count_base(i)} ({round((s.count_base(i) / s.len() * 100), 1)}%)"
+
+    contents = read_html_file('gene_calc.html')
+    context = {'gene': gene, 'length': s.len(), 'info': info}
+    contents = contents.render(context=context)
+    return contents
+
+def get_gene_list(arguments):
+    chromo = arguments['chromo'][0].upper()
+    start = arguments['start'][0]
+    end = arguments['end'][0]
+    print(chromo, start, end)
+    ENDPOINT = "/overlap/region/human/"
+    NARROW = f"{chromo}:{start}-{end}"
+    REQUEST = ENDPOINT + NARROW + PARAMS + ";feature=gene"
+    print(REQUEST)
+    conn = http.client.HTTPConnection(SERVER)
+
+    try:
+        conn.request("GET", REQUEST)
+    except ConnectionRefusedError:
+        print("ERROR! Cannot connect to the Server")
+        exit()
+
+    r1 = conn.getresponse()
+
+    print(f"Response received!: {r1.status} {r1.reason}\n")
+
+    data1 = r1.read().decode("utf-8")
+    response = json.loads(data1)
+    genes = ""
+
+    for i in response:
+        if "external_name" in i:
+            genes += f"<li>{i['external_name']}</li>"
+
+    if genes == "":
+        genes = "No found genes for the selected chromosome interval"
+
+    contents = read_html_file('gene_list.html')
+    context = {'chromo': chromo, 'start': start, 'end': end, 'genes': genes}
+    contents = contents.render(context=context)
+    return contents
 
 class TestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
@@ -212,8 +292,8 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         elif path.startswith("/calc"):
             contents = get_calc(arguments)
 
-        elif path.startswith("/genelist"):
-            contents = get_genelist(arguments)
+        elif path.startswith("/gene_list"):
+            contents = get_gene_list(arguments)
 
         else:
             contents = Path('html/error.html').read_text()

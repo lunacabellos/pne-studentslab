@@ -1,10 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:list-style-type="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>info_gene</title>
 </head>
-<body>
-
+<body style="background-color: Darkseagreen">
+  <h1>INFORMATION OF A HUMAN GENE: </h1>
+  <br>
+    - The selected gene is: {{context.gene}}
+    <p> <br> <hr>
+    <p style="color:Lavenderblush;">RETRIEVED INFORMATION:</p>
+    Identification: {{context.id}}<br>
+    Start: {{context.start}}<br>
+    End: {{context.end}}<br>
+    Length: {{context.length}}<br>
+    Name of the chromosome: {{context.chromo}}<br>
+    <p> <a href="/" style="color:LightGrey;">Main page</a>
 </body>
 </html>

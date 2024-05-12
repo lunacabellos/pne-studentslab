@@ -1,10 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:list-style-type="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>calc_gene</title>
 </head>
-<body>
-
+<body style="background-color: CadetBlue">
+  <h1>CALCULATIONS ON A HUMAN GENE: </h1>
+  <br>
+    - The selected gene is: {{context.gene}}
+    <p> <br> <hr>
+    <p style="color:Lavenderblush;">PERFORMED CALCULATIONS:</p>
+    Total length: {{context.length}}<br>
+    Bases percentages: <br>
+    <ul>{{context.info}}</ul>
+    <p> <a href="/" style="color:LightGrey;">Main page</a>
 </body>
 </html>

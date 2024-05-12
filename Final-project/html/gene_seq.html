@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <title>sequence_gene</title>
 </head>
-<body style="background-color: Darkseagreen">
-  <h1>TITLE: </h1>
+<body style="background-color: YellowGreen">
+  <h1>SEQUENCE OF A HUMAN GENE: </h1>
   <br>
-    {{context.gene}}<br>
-    {{context.seq}}
+    - The selected gene is: {{context.gene}}
+    <p> <br> <hr>
+    <p style="color:Lavenderblush;">THE SEQUENCE OF GENE {{context.gene}} IS:</p>
+    <textarea rows="23" cols="70">{{context.seq}}</textarea><br>
     <p> <a href="/" style="color:LightGrey;">Main page</a>
 </body>
 </html>

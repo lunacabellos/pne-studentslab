@@ -1,10 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:list-style-type="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>gene_list</title>
 </head>
-<body>
-
+<body style="background-color: Orchid">
+  <h1>LIST OF GENES IN THE SELECTED CHROMOSOME: </h1>
+  <br>
+    - The selected chromosome is: {{context.chromo}}<br>
+    - The selected starting point is: {{context.start}}<br>
+    - The selected ending point is: {{context.end}}
+    <p> <br> <hr>
+    <p style="color:Lavenderblush;">THE NAMES OF THE GENES ARE:</p>
+    <ul>{{context.genes}}</ul>
+    <p> <a href="/" style="color:LightGrey;">Main page</a>
 </body>
 </html>
