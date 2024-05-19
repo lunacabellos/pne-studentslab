@@ -74,15 +74,20 @@ def get_karyotype(arguments):
     data1 = r1.read().decode("utf-8")
     response = json.loads(data1)
 
-    info_chromo = response["karyotype"]
-    chromo_list = ""
+    try:
+        info_chromo = response["karyotype"]
+        chromo_list = ""
 
-    for i in info_chromo:
-        chromo_list += f"<li>{str(i)}</li>"
+        for i in info_chromo:
+            chromo_list += f"<li>{str(i)}</li>"
 
-    contents = read_html_file('karyotype.html')
-    context = {'info_chromo': chromo_list, 'species': species}
-    contents = contents.render(context=context)
+        contents = read_html_file('karyotype.html')
+        context = {'info_chromo': chromo_list, 'species': species}
+        contents = contents.render(context=context)
+
+    except KeyError:
+        contents = Path('html/error.html').read_text()
+
     return contents
 
 def get_length(arguments):
@@ -106,15 +111,20 @@ def get_length(arguments):
 
     data1 = r1.read().decode("utf-8")
     response = json.loads(data1)
-    length_chromo = None
+    try:
+        length_chromo = None
 
-    for i in response["top_level_region"]:
-        if i["name"] == chromo:
-            length_chromo = i["length"]
+        for i in response["top_level_region"]:
+            if i["name"] == chromo:
+                length_chromo = i["length"]
 
-    contents = read_html_file('chrom_length.html')
-    context = {'length_chromo': length_chromo, 'species': species, 'chromo': chromo}
-    contents = contents.render(context=context)
+        contents = read_html_file('chrom_length.html')
+        context = {'length_chromo': length_chromo, 'species': species, 'chromo': chromo}
+        contents = contents.render(context=context)
+
+    except KeyError:
+        contents = Path('html/error.html').read_text()
+
     return contents
 
 def get_id(gene):
@@ -136,7 +146,11 @@ def get_id(gene):
 
     data1 = r1.read().decode("utf-8")
     response = json.loads(data1)
-    return response["id"]
+    try:
+        id_gene = response["id"]
+    except KeyError:
+        id_gene = ""
+    return id_gene
 
 def get_seq(arguments):
     gene = arguments['gene'][0].upper()
@@ -157,12 +171,15 @@ def get_seq(arguments):
 
     print(f"Response received!: {r1.status} {r1.reason}\n")
 
-    data1 = r1.read().decode("utf-8")
-    response = json.loads(data1)
+    if r1.reason == "Bad Request":
+        contents = Path('html/error.html').read_text()
+    else:
+        data1 = r1.read().decode("utf-8")
+        response = json.loads(data1)
+        contents = read_html_file('gene_seq.html')
+        context = {'gene': gene,  'seq': response["seq"]}
+        contents = contents.render(context=context)
 
-    contents = read_html_file('gene_seq.html')
-    context = {'gene': gene,  'seq': response["seq"]}
-    contents = contents.render(context=context)
     return contents
 
 def get_info(arguments):
@@ -184,16 +201,20 @@ def get_info(arguments):
 
     print(f"Response received!: {r1.status} {r1.reason}\n")
 
-    data1 = r1.read().decode("utf-8")
-    response = json.loads(data1)
-    length = response['end'] - response['start']
+    if r1.reason == "Bad Request":
+        contents = Path('html/error.html').read_text()
+    else:
+        data1 = r1.read().decode("utf-8")
+        response = json.loads(data1)
+        length = response['end'] - response['start']
 
-    contents = read_html_file('gene_info.html')
-    context = {'gene': gene, 'start': response["start"], 'end': response["end"],
-               'length': length,
-               'id': response['id'],
-               'chromo': response['seq_region_name']}
-    contents = contents.render(context=context)
+        contents = read_html_file('gene_info.html')
+        context = {'gene': gene, 'start': response["start"], 'end': response["end"],
+                   'length': length,
+                   'id': response['id'],
+                   'chromo': response['seq_region_name']}
+        contents = contents.render(context=context)
+
     return contents
 
 def get_calc(arguments):
@@ -215,53 +236,62 @@ def get_calc(arguments):
 
     print(f"Response received!: {r1.status} {r1.reason}\n")
 
-    data1 = r1.read().decode("utf-8")
-    response = json.loads(data1)
-    s = Seq(response["seq"])
-    info = ""
-    for i in s.count():
-        info += f"<li>{i} : {s.count_base(i)} ({round((s.count_base(i) / s.len() * 100), 1)}%)"
+    if r1.reason == "Bad Request":
+        contents = Path('html/error.html').read_text()
+    else:
+        data1 = r1.read().decode("utf-8")
+        response = json.loads(data1)
+        s = Seq(response["seq"])
+        info = ""
+        for i in s.count():
+            info += f"<li>{i} : {s.count_base(i)} ({round((s.count_base(i) / s.len() * 100), 1)}%)"
 
-    contents = read_html_file('gene_calc.html')
-    context = {'gene': gene, 'length': s.len(), 'info': info}
-    contents = contents.render(context=context)
+        contents = read_html_file('gene_calc.html')
+        context = {'gene': gene, 'length': s.len(), 'info': info}
+        contents = contents.render(context=context)
     return contents
 
 def get_gene_list(arguments):
-    chromo = arguments['chromo'][0].upper()
-    start = arguments['start'][0]
-    end = arguments['end'][0]
-    print(chromo, start, end)
-    ENDPOINT = "/overlap/region/human/"
-    NARROW = f"{chromo}:{start}-{end}"
-    REQUEST = ENDPOINT + NARROW + PARAMS + ";feature=gene"
-    print(REQUEST)
-    conn = http.client.HTTPConnection(SERVER)
-
     try:
-        conn.request("GET", REQUEST)
-    except ConnectionRefusedError:
-        print("ERROR! Cannot connect to the Server")
-        exit()
+        chromo = arguments['chromo'][0].upper()
+        start = arguments['start'][0]
+        end = arguments['end'][0]
+        print(chromo, start, end)
+        ENDPOINT = "/overlap/region/human/"
+        NARROW = f"{chromo}:{start}-{end}"
+        REQUEST = ENDPOINT + NARROW + PARAMS + ";feature=gene"
+        print(REQUEST)
+        conn = http.client.HTTPConnection(SERVER)
 
-    r1 = conn.getresponse()
+        try:
+            conn.request("GET", REQUEST)
+        except ConnectionRefusedError:
+            print("ERROR! Cannot connect to the Server")
+            exit()
 
-    print(f"Response received!: {r1.status} {r1.reason}\n")
+        r1 = conn.getresponse()
 
-    data1 = r1.read().decode("utf-8")
-    response = json.loads(data1)
-    genes = ""
+        print(f"Response received!: {r1.status} {r1.reason}\n")
 
-    for i in response:
-        if "external_name" in i:
-            genes += f"<li>{i['external_name']}</li>"
+        if r1.reason == "Bad Request":
+            contents = Path('html/error.html').read_text()
+        else:
+            data1 = r1.read().decode("utf-8")
+            response = json.loads(data1)
+            genes = ""
 
-    if genes == "":
-        genes = "No found genes for the selected chromosome interval"
+            for i in response:
+                if "external_name" in i:
+                    genes += f"<li>{i['external_name']}</li>"
 
-    contents = read_html_file('gene_list.html')
-    context = {'chromo': chromo, 'start': start, 'end': end, 'genes': genes}
-    contents = contents.render(context=context)
+            if genes == "":
+                genes = "No found genes for the selected chromosome interval"
+
+            contents = read_html_file('gene_list.html')
+            context = {'chromo': chromo, 'start': start, 'end': end, 'genes': genes}
+            contents = contents.render(context=context)
+    except KeyError:
+        contents = Path('html/error.html').read_text()
     return contents
 
 class TestHandler(http.server.BaseHTTPRequestHandler):
